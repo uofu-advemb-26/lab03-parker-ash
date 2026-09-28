@@ -19,12 +19,20 @@ SemaphoreHandle_t semaphore;
 int counter;
 int on;
 
+void atomic_increment(int *x, SemaphoreHandle_t *s) {
+  // lock
+  counter += 1;
+  // unlock
+}
+
 // Execution context waits and increments counter forever
 // after incrementing, prints value
 void side_thread(void *params) {
   while (1) {
     vTaskDelay(100);
-    counter += 1;
+
+    atomic_increment(&counter, &semaphore);
+
     printf("hello world from %s! Count %d\n", "thread", counter);
   }
 }
@@ -35,7 +43,10 @@ void main_thread(void *params) {
   while (1) {
     cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, on);
     vTaskDelay(100);
-    printf("hello world from %s! Count %d\n", "main", counter++);
+
+    atomic_increment(&counter, &semaphore);
+
+    printf("hello world from %s! Count %d\n", "main", counter);
     on = !on;
   }
 }
