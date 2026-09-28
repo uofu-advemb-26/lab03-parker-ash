@@ -1,6 +1,7 @@
 Testing
 build
 log
+lib/
 
 *.log.*
 *-asciinema
