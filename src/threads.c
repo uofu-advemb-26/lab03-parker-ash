@@ -12,11 +12,15 @@
 #define SIDE_TASK_PRIORITY (tskIDLE_PRIORITY + 1UL)
 #define SIDE_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
 
+// semaphore! Shared resource AND locking mechanism.
 SemaphoreHandle_t semaphore;
 
+// Shared resources in global memory space.
 int counter;
 int on;
 
+// Execution context waits and increments counter forever
+// after incrementing, prints value
 void side_thread(void *params) {
   while (1) {
     vTaskDelay(100);
@@ -25,6 +29,8 @@ void side_thread(void *params) {
   }
 }
 
+// Execution context turns on the LED, increments and prints the counter,
+// and toggles `on` forever
 void main_thread(void *params) {
   while (1) {
     cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, on);
@@ -40,6 +46,8 @@ int main(void) {
   on = false;
   counter = 0;
   TaskHandle_t main, side;
+  // SemaphoreHandle_t xSemaphoreCreateCounting(UBaseType_t uxMaxCount,
+  //                                            UBaseType_t uxInitialCount );
   semaphore = xSemaphoreCreateCounting(1, 1);
   xTaskCreate(main_thread, "MainThread", MAIN_TASK_STACK_SIZE, NULL,
               MAIN_TASK_PRIORITY, &main);
