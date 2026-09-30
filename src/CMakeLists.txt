@@ -1,6 +1,7 @@
 # This is the main binary. List your C files here.
 add_executable(threads
-    threads.c
+    threads_deadlock.c
+    threads_funcs.c
     )
 
 pico_set_program_name(threads "threaderihardlyknower")
@@ -35,4 +36,4 @@ find_program(OPENOCD openocd)
 find_program(PICOTOOL picotool)
 
 add_custom_target(flash ${PICOTOOL} load -f $<TARGET_FILE:threads> DEPENDS threads)
-add_custom_target(openocd_flash ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000' -c program "$<TARGET_FILE:threads>" verify reset exit' DEPENDS threads)
+add_custom_target(openocd_flash ${OPENOCD} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000' -c 'program "$<TARGET_FILE:threads>" verify reset exit' DEPENDS threads)
