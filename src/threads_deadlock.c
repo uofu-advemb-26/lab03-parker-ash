@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <task.h>
 #include <threads_funcs.h>
-#include <threads_deadlock.h>
 
 #define MAIN_TASK_PRIORITY (tskIDLE_PRIORITY + 1UL)
 #define MAIN_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
@@ -30,12 +29,14 @@ void side_thread(void *params) {
 
     bool deadlocked = is_deadlocked_takeAthenB(&semaphore_A, &semaphore_B);
 
-    printf("hello world from %s! Deadlocked? %s\n", "thread", deadlocked ? "true" : "false");
+    printf("hello world from %s! Deadlocked? %s\n", "thread",
+           deadlocked ? "true" : "false");
   }
 }
 
 /**
- * Toggles LED once every 100 ticks. When deadlocked, toggles LED once every second instead.
+ * Toggles LED once every 100 ticks. When deadlocked, toggles LED once every
+ * second instead.
  */
 void main_thread(void *params) {
   while (1) {
@@ -44,7 +45,8 @@ void main_thread(void *params) {
 
     bool deadlocked = is_deadlocked_takeBthenA(&semaphore_A, &semaphore_B);
 
-    printf("hello world from %s! Deadlocked? %s\n", "main", deadlocked ? "true" : "false");
+    printf("hello world from %s! Deadlocked? %s\n", "main",
+           deadlocked ? "true" : "false");
     on = !on;
   }
 }
@@ -61,7 +63,7 @@ int main(void) {
   xTaskCreate(main_thread, "MainThread", MAIN_TASK_STACK_SIZE, NULL,
               MAIN_TASK_PRIORITY, &main);
   xTaskCreate(side_thread, "SideThread1", SIDE_TASK_STACK_SIZE, NULL,
-              SIDE_TASK_PRIORITY, &side);     
+              SIDE_TASK_PRIORITY, &side);
   vTaskStartScheduler();
   return 0;
 }

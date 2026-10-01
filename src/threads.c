@@ -5,8 +5,8 @@
 #include <semphr.h>
 #include <stdio.h>
 #include <task.h>
-#include <threads_funcs.h>
 #include <threads.h>
+#include <threads_funcs.h>
 
 #define MAIN_TASK_PRIORITY (tskIDLE_PRIORITY + 1UL)
 #define MAIN_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
